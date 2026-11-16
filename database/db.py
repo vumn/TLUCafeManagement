@@ -11,7 +11,7 @@ class Database:
             "port":3306,
             "charset":"utf8mb4"
         }
-    def get_connecttion(self):
+    def get_connection(self):
         try:
             conn = mysql.connector.connect(**self.config)
             if conn.is_connected():
