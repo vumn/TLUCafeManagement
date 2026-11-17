@@ -135,16 +135,16 @@ class LoginView(ctk.CTkFrame):
         if not username or not password:
             messagebox.showwarning("Thiếu thông tin", "Vui lòng nhập đầy đủ thông tin")
             return
-    # Truy vấn chống SQL Injection
+        hashed_pw = db.hash_password(password)
+        # Check username va password
         sql = """
             SELECT user_id, username, full_name, role 
             FROM users 
             WHERE username = %s AND password = %s
         """
-        user = db.fetch_one(sql, (username, password))
+        user = db.fetch_one(sql, (username, hashed_pw))
 
         if user:
-            # Gọi hàm callback chuyển sang màn hình chính
             self.on_login_success(user)
         else:
             messagebox.showerror("Đăng nhập thất bại", "Tài khoản hoặc mật khẩu không chính xác!")

@@ -53,8 +53,8 @@ CREATE TABLE order_details (
 -- SEED DATA
 
 INSERT INTO users (username, password, full_name, role) VALUES
-('admin', '123456', 'QL-Vũ', 'admin'),
-('staff', '123456', 'Nguyễn Minh Vũ', 'staff');
+('admin', SHA2('123456', 256), 'QL-Vũ', 'admin'),
+('staff', SHA2('123456', 256), 'Nguyễn Minh Vũ', 'staff');
 
 INSERT INTO categories (category_name) VALUES
 ('Đồ uống'),

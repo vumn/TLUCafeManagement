@@ -1,5 +1,6 @@
 import mysql.connector
 from mysql.connector import Error
+import hashlib
 
 class Database:
     def __init__(self):
@@ -20,8 +21,19 @@ class Database:
             print(f"Loi ket noi DB: {e}")
         return None
     
+    def hash_password(self, raw_password):
+        return hashlib.sha256(raw_password.encode("utf-8")).hexdigest()
+    
+    def create_user(self, username, raw_password, full_name, role="staff"):
+        hashed_pw = self.hash_password(raw_password)
+        sql = """
+            INSERT INTO users (username, password, full_name, role)
+            VALUES (%s, %s, %s, %s)
+        """
+        return self.execute_query(sql, (username, hashed_pw, full_name, role))
+    
     def fetch_all(self, query, params=None):
-        conn = self.get_connecttion()
+        conn = self.get_connection()
         if not conn:
             return []
         results =  []
@@ -39,7 +51,7 @@ class Database:
         return results
     
     def fetch_one(self, query, params=None):
-        conn = self.get_connecttion()
+        conn = self.get_connection()
         if not conn:
             return None
         result = None
@@ -57,7 +69,7 @@ class Database:
         return result
     
     def execute_query(self, query, params=None):
-        conn = self.get_connecttion()
+        conn = self.get_connection()
         if not conn:
             return None
         cursor = None
@@ -76,7 +88,7 @@ class Database:
             conn.close()
     
     def create_order_transaction(self, user_id, total_amount, cart_items):
-        conn = self.get_connecttion()
+        conn = self.get_connection()
         if not conn:
             return False, "Khong the ket noi DB"
         cursor = None
